@@ -1,0 +1,244 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    background: linear-gradient(#ffd9f2, #e7c6ff);
+    height: 100vh;
+    overflow: hidden;
+}
+
+#pantalla-juego {
+    background-image: url("fondo1.jpg"); 
+    background-size: cover; 
+    background-position: center;  
+    background-repeat: no-repeat;
+}
+
+/* Pantallas */
+.pantalla {
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0; left: 0;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.visible {
+    display: flex;
+}
+
+/* Inicio */
+#pantalla-inicio h1 {
+    font-size: 3rem;
+    color: #b44dc7;
+    margin-bottom: 2rem;
+}
+
+#btn-jugar {
+    padding: 1rem 2rem;
+    background: #ff9de2;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: rgb(139, 137, 137);
+    box-shadow: 0px 0px 20px #ffb3ef;
+}
+
+.particulas {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* Juego */
+#puntaje {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    color: #fdf9f9;              
+    font-size: 1.8rem;           
+    font-weight: 800;    
+}
+
+
+#canasta {
+    width: 250px;
+    position: absolute;
+    bottom: 20px;
+}
+
+#canasta {
+    filter: drop-shadow(0px 8px 15px rgba(0,0,0,0.3));
+}
+
+
+.fruta {
+    width: 200px;
+    position: absolute;
+    will-change: transform, opacity;
+}
+
+
+@keyframes caerSuave {
+    0% {
+        transform: translateY(-500px) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+.entrar-canasta {
+    animation: entrarNatural 0.28s linear forwards;
+    will-change: transform, opacity, filter;
+}
+
+@keyframes entrarNatural {
+    0% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+        filter: brightness(1);
+    }
+    100% {
+        transform: scale(0.85) translateY(35px);
+        opacity: 0;
+        filter: brightness(1.15);
+    }
+}
+
+#pantalla-final button {
+    padding: 1rem 2rem;
+    margin-top: 20px;
+    background: #ff9de2;
+    color: white;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+}
+
+#UI-superior {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 0 25px;
+    font-size: 1.8rem;
+    color: white;
+    text-shadow: 0px 2px 5px rgba(0,0,0,0.4);
+}
+
+/* Izquierda: puntaje */
+.ui-izq {
+    justify-self: start;
+}
+
+/* Centro: vidas */
+.ui-centro {
+    justify-self: center;
+}
+
+/* Derecha: ruedita */
+.ui-der {
+    justify-self: end;
+    font-size: 2.2rem;
+    cursor: pointer;
+}
+
+#btn-config {
+    cursor: pointer;
+    font-size: 2.2rem;
+}
+
+#menu-config button {
+    padding: 10px 20px;
+    border-radius: 15px;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+#btn-guante {
+    width: 180px;
+    height: 48px;
+
+    margin-top: 12px;
+
+    background: rgba(255, 255, 255, 0.28);
+    backdrop-filter: blur(6px);
+    border: 1.8px solid rgba(255, 255, 255, 0.55);
+
+    border-radius: 16px;
+
+    color: #6b4e8f;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+
+    cursor: pointer;
+    transition: 0.25s ease;
+    box-shadow: 0 4px 12px rgba(160, 120, 255, 0.25);
+}
+
+#btn-guante:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.38);
+    box-shadow: 0 6px 16px rgba(160, 120, 255, 0.35);
+}
+
+#btn-guante:active {
+    transform: scale(0.97);
+}
+
+#overlay-pausa {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    backdrop-filter: blur(8px);
+    background: rgba(0,0,0,0.25);
+    opacity: 0;
+    pointer-events: none; /* importantísimo */
+    transition: opacity 0.3s ease;
+    z-index: 9999;
+}
+
+#overlay-pausa.activo {
+    opacity: 1;
+    pointer-events: none; /* deja pasar clics */
+}
+
+#menu-config {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255,255,255,0.8);
+    padding: 25px;
+    border-radius: 20px;
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 10000; /* encima del overlay */
+}
+
+
+.pausado * {
+    animation-play-state: paused !important;
+}

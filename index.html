@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fruit Collector</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+<!-- Pantalla de Inicio -->
+<div id="pantalla-inicio" class="pantalla visible">
+    <h1>Fruit Collector</h1>
+    <button id="btn-jugar">Jugar</button>
+    <button id="btn-guante">Conectar Guante</button>
+
+    <div class="particulas"></div>
+</div>
+
+<!-- Pantalla de Juego -->
+<div id="pantalla-juego" class="pantalla">
+
+    <div id="UI-superior">
+        <div class="ui-izq" id="puntaje">Puntos: 0</div>
+        <div class="ui-centro" id="vidas">❤️❤️❤️</div>
+        <div class="ui-der" id="btn-config">⚙️</div>
+    </div>
+
+    <img id="canasta" src="canasta.png" alt="canasta" />
+    <div id="frutas-container"></div>
+
+    <!-- MENÚ DE CONFIGURACIÓN -->
+    <div id="menu-config" class="menu">
+    <button id="btn-sonido">Silenciar</button>
+    <button id="btn-Reanudar">Reanudar</button>
+    <button id="btn-ir-inicio">Inicio</button>
+    </div>
+
+    <audio id="musica-fondo" src="musica.mp3" loop></audio>
+    </div>
+
+</div>
+
+<!-- Pantalla Final -->
+<div id="pantalla-final" class="pantalla">
+    <h2>Fin de la partida</h2>
+    <p id="puntaje-final"></p>
+
+    <button id="btn-reintentar">Volver a jugar</button>
+    <button id="btn-volver-inicio">Volver al inicio</button>
+</div>
+
+    <div id="overlay-pausa"></div>
+    <script src="game.js"></script>
+</body>
+</html>
