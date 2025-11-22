@@ -19,7 +19,6 @@ const btnIrInicio = document.getElementById("btn-ir-inicio");
 const btnReanudar = document.getElementById("btn-Reanudar");
 const musicaFondo = document.getElementById("musica-fondo");
 const overlayPausa = document.getElementById("overlay-pausa");
-document.getElementById("btn-guante").onclick = conectarGuante;
 
 
 let puntaje = 0;
@@ -31,6 +30,9 @@ let velocidadCaida = 6;
 let intervaloCreacion = 1600;
 let port;
 let reader;
+let frutasRecolectadas = [];
+let frutaActual = null;
+let indiceFrutaActual = 0;
 
 
 function mostrar(pantalla) {
@@ -59,7 +61,6 @@ function iniciarJuego() {
         if (!juegoPausado) crearFruta();
     }, 1200);
 
-    // Aumento de dificultad
     setInterval(() => {
         velocidadCaida -= 0.3;
         if (velocidadCaida < 0.6) velocidadCaida = 0.6;
@@ -84,11 +85,14 @@ function perderVida() {
 const frutasPNG = {
     apple: "manzana.png",
     banana: "banana.png",
-    strawberry: "frutilla.png"
+    strawberry: "frutilla.png",
+    orange: "naranja.png",
+    grape: "uva.png"
 };
 
+
 function crearFruta() {
-    const tipos = ["apple", "banana", "strawberry"];
+    const tipos = ["apple", "banana", "strawberry", "orange", "grape"];
     const tipo = tipos[Math.floor(Math.random() * tipos.length)];
 
     const fruta = document.createElement("img");
@@ -99,10 +103,12 @@ function crearFruta() {
     fruta.style.animation = `caerSuave ${velocidadCaida}s linear forwards`;
 
     frutasContainer.appendChild(fruta);
-    moverFruta(fruta);
+
+    moverFruta(fruta, tipo);
 }
 
-function moverFruta(fruta) {
+
+function moverFruta(fruta, tipo) {
     let colisiono = false;
     let y = -100;
 
@@ -124,8 +130,16 @@ function moverFruta(fruta) {
         ) {
             colisiono = true;
             fruta.classList.add("entrar-canasta");
+
             puntaje++;
             puntajeUI.textContent = "Puntos: " + puntaje;
+
+            frutasRecolectadas.push(tipo);
+
+            // AL LLEGAR A 10 → ACTIVAR CLASIFICACIÓN
+            if (frutasRecolectadas.length >= 10) {
+                iniciarClasificacion();
+            }
 
             clearInterval(intervalo);
             setTimeout(() => fruta.remove(), 350);
@@ -139,6 +153,47 @@ function moverFruta(fruta) {
         }
 
     }, 20);
+}
+
+function iniciarClasificacion() {
+    clearInterval(intervaloFrutas);
+    juegoPausado = true;
+
+    canasta.style.display = "none";
+    frutasContainer.innerHTML = "";
+
+    document.getElementById("zona-clasificacion").classList.add("visible");
+
+    indiceFrutaActual = 0;
+    mostrarFrutaAClasificar();
+}
+
+function mostrarFrutaAClasificar() {
+    if (indiceFrutaActual >= frutasRecolectadas.length) {
+        finalizarJuego(); // o crear pantalla especial
+        return;
+    }
+
+    frutaActual = frutasRecolectadas[indiceFrutaActual];
+
+    const img = document.getElementById("fruta-a-clasificar");
+
+    img.src = frutasPNG[frutaActual];
+    img.style.left = "45vw";  // posición inicial centrada
+}
+
+function soltarEnCanasto(num) {
+    let frutaImg = document.getElementById("fruta-a-clasificar");
+    let zonas = document.querySelectorAll(".canasto-cl");
+
+    frutaImg.style.transition = "0.4s";
+    frutaImg.style.top = zonas[num].getBoundingClientRect().top + "px";
+    frutaImg.style.left = zonas[num].getBoundingClientRect().left + "px";
+
+    setTimeout(() => {
+        indiceFrutaActual++;
+        mostrarFrutaAClasificar();
+    }, 500);
 }
 
 function finalizarJuego() {
@@ -210,75 +265,81 @@ btnIrInicio.onclick = () => {
     mostrar(pantallaInicio);
 };
 
-let ax = 0;
+btnVolverInicio.onclick = () => {
+    juegoPausado = false;
 
-async function conectarGuante() {
-    const port = await navigator.serial.requestPort();
-    await port.open({ baudRate: 115200 });
+    overlayPausa.classList.remove("activo");
+    pantallaJuego.classList.remove("pausado");
 
-    const decoder = new TextDecoderStream();
-    port.readable.pipeTo(decoder.writable);
-    const input = decoder.readable.getReader();
+    musicaFondo.pause();
+    musicaFondo.currentTime = 0;
 
-    while (true) {
-        const { value, done } = await input.read();
-        if (done) break;
-        if (value) procesarMovimiento(value);
-    }
+    mostrar(pantallaInicio);
+};
+
+//modificar esto para el guante
+
+function moverFrutaClasificacion() {
+    if (!frutaActual) return;
+
+    let fruta = document.getElementById("fruta-a-clasificar");
+
+    let sensibilidad = 2.5;
+    let mov = ax * sensibilidad;
+
+    let X = fruta.getBoundingClientRect().left + mov;
+
+    if (X < 100) X = 100;
+    if (X > window.innerWidth - 200) X = window.innerWidth - 200;
+
+    fruta.style.left = X + "px";
 }
 
-function procesarMovimiento(data) {
-    try {
-        const obj = JSON.parse(data);
-        ax = obj.ax;  // recibimos inclinación
-        console.log("Llega JSON:", data);
-    } catch (e) {
-        // si JSON llega "cortado", lo ignoramos
+const UMBRAL = 1.7;
+
+function verificarClasificacion() {
+
+    if (!frutaActual) return;
+
+    // Pulgar → Manzana
+    if (H_PULGAR < UMBRAL && frutaActual === "apple") {
+        soltarEnCanasto(0);
     }
-}
 
-function actualizarCanasta() {
-    if (juegoPausado) return;
+    // Índice → Banana
+    if (H_INDICE < UMBRAL && frutaActual === "banana") {
+        soltarEnCanasto(1);
+    }
 
-    const sensibilidad = 25;  
-    const movimiento = ax * sensibilidad;
+    // Medio → Frutilla
+    if (H_MEDIO < UMBRAL && frutaActual === "strawberry") {
+        soltarEnCanasto(2);
+    }
 
-    const rect = canasta.getBoundingClientRect();
-    let nuevaX = rect.left + movimiento;
+    // Anular → Naranja
+    if (H_ANULAR < UMBRAL && frutaActual === "orange") {
+        soltarEnCanasto(3);
+    }
 
-    if (nuevaX < 0) nuevaX = 0;
-    if (nuevaX > window.innerWidth - rect.width)
-        nuevaX = window.innerWidth - rect.width;
-
-    canasta.style.left = nuevaX + "px";
+    // Meñique → Uva
+    if (H_MEÑIQUE < UMBRAL && frutaActual === "grape") {
+        soltarEnCanasto(4);
+    }
 }
 
 
 function loop() {
-    actualizarCanasta();
+    // Movimiento de la canasta solo si estamos en el modo normal
+    if (!document.getElementById("zona-clasificacion").classList.contains("visible")) {
+        actualizarCanasta();
+    }
+
+    // Si estamos en modo clasificación, movemos la fruta con el acelerómetro
+    else {
+        moverFrutaClasificacion();
+        verificarClasificacion();  // acá verificamos los dedos SOLO en este modo
+    }
+
     requestAnimationFrame(loop);
 }
 loop();
-
-let guanteConectado = false;
-
-async function conectarGuante() {
-    try {
-        const port = await navigator.serial.requestPort();
-        await port.open({ baudRate: 115200 });
-
-        guanteConectado = true;
-        alert("¡Guante conectado con éxito!");
-        // ...el resto de tu función de conexión
-    } catch (e) {
-        alert("Error conectando el guante");
-    }
-}
-
-btnJugar.onclick = () => {
-    if (!guanteConectado) {
-        alert("Primero conecta el guante 🧤");
-        return;
-    }
-    iniciarJuego();
-};
