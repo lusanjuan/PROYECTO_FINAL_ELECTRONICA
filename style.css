@@ -242,3 +242,60 @@ body {
 .pausado * {
     animation-play-state: paused !important;
 }
+
+/* ZONA DE CLASIFICACIÓN */
+#zona-clasificacion {
+    position: absolute;
+    inset: 0;                 
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    display: none;
+    pointer-events: none;      /* no bloquea caídas previas */
+}
+
+
+#zona-clasificacion.visible {
+    display: block;
+}
+
+#titulo-clasificacion {
+    margin-top: 120px;
+    margin-bottom: 40px;
+    font-size: 50px;
+    font-weight: 900;
+    text-shadow: 0 0 25px rgba(255,255,255,0.9);
+}
+
+#fruta-a-clasificar {
+    width: 130px;   
+    height: auto;     
+    object-fit: contain; 
+    max-width: 150px;    
+}
+
+
+#canastos-clasificacion {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;                   
+    display: flex;
+    justify-content: space-between; /* separación uniforme */
+    align-items: flex-end;
+    z-index: 9999;
+}
+
+.canasto-cl p {
+    text-align: center;
+    color: white;
+    font-size: 22px;
+    margin-top: 5px;
+}
+
+
+.canasto-imagen {
+    width: 180px;
+    filter: drop-shadow(0px 5px 12px rgba(255,255,255,0.4));
+}
