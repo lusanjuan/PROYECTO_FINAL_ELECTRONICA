@@ -30,17 +30,57 @@
     <img id="canasta" src="canasta.png" alt="canasta" />
     <div id="frutas-container"></div>
 
+
+    <!-- ▼ CLASIFICACIÓN (oculta durante el juego normal) -->
+    <div id="zona-clasificacion" class="oculto">
+
+        <h2 id="titulo-clasificacion">Clasificación de frutas</h2>
+
+        <img id="fruta-a-clasificar" src="" alt="fruta" />
+
+        <div id="canastos-clasificacion">
+
+            <div class="canasto-cl" data-tipo="manzana">
+                <img src="canasta.png" class="canasto-imagen">
+                <p>Manzanas</p>
+            </div>
+
+            <div class="canasto-cl" data-tipo="banana">
+                <img src="canasta.png" class="canasto-imagen">
+                <p>Bananas</p>
+            </div>
+
+            <div class="canasto-cl" data-tipo="frutilla">
+                <img src="canasta.png" class="canasto-imagen">
+                <p>Frutillas</p>
+            </div>
+
+            <div class="canasto-cl">
+                <img src="canasta.png" class="canasto-imagen">
+                <p>Naranjas</p>
+            </div>
+
+            <div class="canasto-cl">
+                <img src="canasta.png" class="canasto-imagen">
+                <p>Uvas</p>
+            </div>
+
+        </div>
+
+    </div>
+
+
     <!-- MENÚ DE CONFIGURACIÓN -->
     <div id="menu-config" class="menu">
-    <button id="btn-sonido">Silenciar</button>
-    <button id="btn-Reanudar">Reanudar</button>
-    <button id="btn-ir-inicio">Inicio</button>
+        <button id="btn-sonido">Silenciar</button>
+        <button id="btn-Reanudar">Reanudar</button>
+        <button id="btn-ir-inicio">Inicio</button>
     </div>
 
     <audio id="musica-fondo" src="musica.mp3" loop></audio>
-    </div>
 
-</div>
+</div> 
+
 
 <!-- Pantalla Final -->
 <div id="pantalla-final" class="pantalla">
@@ -51,7 +91,9 @@
     <button id="btn-volver-inicio">Volver al inicio</button>
 </div>
 
+
     <div id="overlay-pausa"></div>
     <script src="game.js"></script>
+
 </body>
 </html>
